@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import { ArrowUpRight } from "lucide-react";
+import { PageIntro, Kicker, Marquee } from "@/components/editorial";
+import { contact, asset } from "@/lib/site";
+export const metadata:Metadata={title:"Contact",description:"Écrivez à La Compagnie Monstre pour Paillettes & Pavés : diffusion, partenariat ou informations sur le spectacle."};
+export default function Page(){return <><PageIntro kicker="Contact · La Compagnie Monstre" title="ON A DES CHOSES" accent="À SE DIRE."><p>Une envie de spectacle, une idée de rencontre,<br />un lieu à faire vibrer ? On vous écoute.</p></PageIntro><section className="wrap contact-grid"><div className="contact-details" data-reveal><Kicker>Production & diffusion</Kicker><a className="big-contact" href={"mailto:"+contact.email}>{contact.email}<ArrowUpRight aria-hidden="true"/></a><a className="big-phone" href={"tel:"+contact.tel}>{contact.phone}</a><p>Pour les horaires, les réservations et les conditions d’accès à une représentation, rapprochez-vous directement du lieu indiqué dans l’agenda.</p></div><div className="contact-photo" data-reveal><img src={asset("/images/bamboche.webp")} alt="Des imprimés portant la phrase Ce soir c’est bamboche !" width="722" height="505" /></div></section><Marquee text="LE COLLECTIF COMMENCE PAR UNE RENCONTRE."/></>;}

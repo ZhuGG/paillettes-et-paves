@@ -1,0 +1,2 @@
+import Link from "@/components/link";
+export default function NotFound(){return <section className="wrap not-found"><p className="kicker">404 · Hors scène</p><h1 className="display">CE PAVÉ-LÀ<br /><span className="pink">S’EST ÉGARÉ.</span></h1><p>Cette page n’existe pas, ou a changé d’adresse.<br />Le cabaret, lui, est toujours là.</p><Link className="button button-dark" href="/">Retour à l’accueil ↗</Link></section>;}
