@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./pop.css";
+import "./motion-pop.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/editorial";
 import { Motion } from "@/components/motion";
@@ -13,5 +15,5 @@ export const metadata: Metadata = {
   icons: { icon: asset("/favicon.svg") },
 };
 export default function RootLayout({children}:Readonly<{children:React.ReactNode}>) {
-  return <html lang="fr"><head><link rel="stylesheet" href={asset("/fonts/anton.css")}/><link rel="stylesheet" href={asset("/fonts/source-sans-3.css")}/></head><body><a className="skip-link" href="#contenu">Aller au contenu</a><Header/><main id="contenu">{children}</main><Footer/><Motion/></body></html>;
+  return <html lang="fr"><head><link rel="preload" href={asset("/fonts/Aileron-Black.otf")} as="font" type="font/otf" crossOrigin="anonymous"/></head><body><a className="skip-link" href="#contenu">Aller au contenu</a><Header/><main id="contenu">{children}</main><Footer/><Motion/></body></html>;
 }
