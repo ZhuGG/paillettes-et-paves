@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./pop.css";
 import "./motion-pop.css";
+import "./reunion.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/editorial";
 import { Motion } from "@/components/motion";

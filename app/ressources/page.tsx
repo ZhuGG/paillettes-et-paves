@@ -1,15 +1,5 @@
-import type { Metadata } from "next";
-import Link from "@/components/link";
-import { ArrowUpRight } from "lucide-react";
-import { PageIntro, Kicker } from "@/components/editorial";
-import { partners } from "@/content/company";
-export const metadata: Metadata = {title:"Les liens du collectif",description:"Partenaires, rencontres et prolongements du projet Paillettes & Pavés."};
-export default function Resources(){return <>
-  <PageIntro art="sardines" kicker="Les liens du collectif" title="ON NE JOUE" accent="PAS EN SOLO."><p>Les lieux qui nous accueillent, les idées que l’on partage et les rencontres qui prolongent le spectacle.</p></PageIntro>
-  <section className="wrap resource-grid">
-    <article className="resource-block"><Kicker>Les partenaires</Kicker><h2>Celles et ceux qui<br/>rendent la rencontre possible.</h2><ul className="resource-list">{partners.map(name=><li key={name}>{name}</li>)}</ul><a className="text-link" href="https://www.lesrancy.fr/evenements/paillettes-et-paves/" target="_blank" rel="noopener noreferrer">Le cabaret aux Rancy <ArrowUpRight size={18}/><span className="sr-only"> — nouvel onglet</span></a></article>
-    <article className="resource-block"><Kicker>Rencontres · En préparation</Kicker><h2>Les idées sortent<br/>du castelet.</h2><p>Des conférences et tables rondes autour de l’éducation populaire, en collaboration avec l’Université populaire de Villeurbanne.</p><Link className="text-link" href="/spectacle">Les nouveaux formats <ArrowUpRight size={18}/></Link></article>
-    <article className="resource-block"><Kicker>Concerts · En préparation</Kicker><h2>Faire de la place<br/>à la musique.</h2><p>Des soirées festives avec les artistes du cabaret et des invité·es surprise. Les rendez-vous seront annoncés dans l’agenda.</p><Link className="text-link" href="/invites">Les artistes du cabaret <ArrowUpRight size={18}/></Link></article>
-    <article className="resource-block"><Kicker>Collectifs & lieux militants</Kicker><h2>Et si on faisait<br/>quelque chose ensemble ?</h2><p>Une rencontre, un lieu à faire vivre, un projet à partager : le collectif commence par une conversation.</p><Link className="text-link" href="/contact">Prendre contact <ArrowUpRight size={18}/></Link></article>
-  </section>
-</>;}
+import type {Metadata} from "next";
+import {PageIntro} from "@/components/editorial";
+import {InfoLinks} from "@/components/info-links";
+export const metadata:Metadata={title:"Faisez gaffe à l’info",description:"Médias indépendants, critique des médias et ressources pour croiser les sources."};
+export default function Resources(){return <><PageIntro art="sardines" kicker="Faisez gaffe à l’info" title="CROISER" accent="LES SOURCES."><p>Le monde ne se résume pas à ce qu’on vous en raconte. Qui parle ? Qui choisit les sujets ? Qui possède les médias ?</p></PageIntro><section className="wrap section-space resources-page"><p className="lead">Lire, confronter les points de vue et se donner les moyens de comprendre.</p><InfoLinks/><p>Pour explorer les propriétaires des médias, consultez la carte et sa date de mise à jour. Les actionnaires évoluent : les ressources liées permettent de remonter aux informations documentées.</p><p className="small-note">Une première sélection à enrichir avec le collectif.</p></section></>;}
