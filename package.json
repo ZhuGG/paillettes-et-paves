@@ -1,6 +1,20 @@
 {
- "name":"pp-ca-va-deborder","version":"0.3.0","private":true,"type":"module",
- "description":"Jeux tactiles Paillettes & Pavés — version statique GitHub Pages",
- "engines":{"node":">=24 <25"},
- "scripts":{"test":"node core.test.mjs","check":"node --check game.js && node --check core.mjs && node --check build.mjs","build":"node build.mjs","start":"python3 -m http.server 4185 --bind 0.0.0.0"}
+  "name": "pp-ca-va-deborder",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "description": "Jeux tactiles Paillettes & Pavés — version statique GitHub Pages",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "test": "node core.test.mjs && node agenda.test.mjs && node three-stage.test.mjs",
+    "check": "node --check game.js && node --check core.mjs && node --check agenda.mjs && node --check three-stage.mjs && node --check build.mjs",
+    "build": "node build.mjs",
+    "start": "python3 -m http.server 4185 --bind 127.0.0.1 --directory dist"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "three": "0.187.0"
+  }
 }

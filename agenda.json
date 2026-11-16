@@ -1,0 +1,149 @@
+{
+  "events": [
+    {
+      "date": "2026-10-10",
+      "title": "Acte 1 · Grottesque Chaos",
+      "venue": "Grrrnd Zero",
+      "city": "Vaulx-en-Velin",
+      "time": "21 h 45",
+      "access": "Modalités auprès du festival",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.grrrndzero.org/index.php/2817-sam-10-et-dim-11-10-grottesque-chaos-festival",
+      "published": true,
+      "source": "Agenda P&P"
+    },
+    {
+      "date": "2026-11-13",
+      "title": "Acte 2 · Paillettes & Pavés",
+      "venue": "MPT – Salle des Rancy",
+      "city": "Lyon",
+      "access": "Prix libre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.lesrancy.fr/evenements/paillettes-et-paves/",
+      "published": true,
+      "time": "",
+      "source": "Les Rancy · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2026-12-11",
+      "title": "Acte 3 · Paillettes & Pavés",
+      "venue": "MPT – Salle des Rancy",
+      "city": "Lyon",
+      "access": "Prix libre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.lesrancy.fr/evenements/paillettes-et-paves/",
+      "published": true,
+      "time": "",
+      "source": "Les Rancy · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2027-01-15",
+      "title": "Acte 4 · Paillettes & Pavés",
+      "venue": "MPT – Salle des Rancy",
+      "city": "Lyon",
+      "access": "Prix libre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.lesrancy.fr/evenements/paillettes-et-paves/",
+      "published": true,
+      "time": "",
+      "source": "Les Rancy · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2027-03-05",
+      "title": "Acte 6 · Paillettes & Pavés",
+      "venue": "MPT – Salle des Rancy",
+      "city": "Lyon",
+      "access": "Prix libre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.lesrancy.fr/evenements/paillettes-et-paves/",
+      "published": true,
+      "time": "",
+      "source": "Les Rancy · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2027-04-30",
+      "title": "Acte 9 · Paillettes & Pavés",
+      "venue": "MPT – Salle des Rancy",
+      "city": "Lyon",
+      "access": "Prix libre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.lesrancy.fr/evenements/paillettes-et-paves/",
+      "published": true,
+      "time": "",
+      "source": "Les Rancy · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2026-12-12",
+      "title": "Acte 3.2 · Paillettes & Pavés",
+      "venue": "Blast art · Vaise",
+      "city": "Lyon",
+      "access": "Horaire et accès à venir",
+      "formats": [
+        "Show",
+        "Concert"
+      ],
+      "published": true,
+      "time": "",
+      "url": "",
+      "source": "Agenda P&P"
+    },
+    {
+      "date": "2027-04-07",
+      "title": "Acte 7 · Paillettes & Pavés",
+      "venue": "Théâtre Le Guignol de Lyon",
+      "city": "Lyon",
+      "access": "Modalités auprès du théâtre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.theatreleguignoldelyon.fr/paillettesetpav%C3%A9s-th%C3%A9%C3%A2treleguignoldelyon",
+      "published": true,
+      "time": "20 h",
+      "source": "Théâtre Le Guignol · vérifié le 16/11/2026"
+    },
+    {
+      "date": "2027-04-21",
+      "title": "Acte 8 · Paillettes & Pavés",
+      "venue": "Théâtre Le Guignol de Lyon",
+      "city": "Lyon",
+      "access": "Modalités auprès du théâtre",
+      "formats": [
+        "Show"
+      ],
+      "url": "https://www.theatreleguignoldelyon.fr/paillettesetpav%C3%A9s-th%C3%A9%C3%A2treleguignoldelyon",
+      "published": true,
+      "time": "20 h",
+      "source": "Théâtre Le Guignol · vérifié le 16/11/2026"
+    }
+  ],
+  "pending": {
+    "visible": true,
+    "title": "Acte 5 · Paillettes & Pavés",
+    "venue": "Le Bouy d’en haut · avec le centre culturel Le Bief",
+    "city": "Ambert (63)"
+  },
+  "updated": "2026-11-16",
+  "project": {
+    "description": "Cabaret marionnettique d’agitation politique et d’éducation populaire.",
+    "formats": "Shows · conférences · concerts",
+    "helloasso": {
+      "url": "https://www.helloasso.com/associations/la-compagnie-monstre/adhesions/adhesion-la-compagnie-monstre",
+      "label": "Adhérer sur HelloAsso",
+      "source": "https://paillettesetpaves.start.page/",
+      "verified": "2026-11-16"
+    },
+    "website": "https://paillettesetpaves.org/"
+  }
+}
