@@ -1,5 +1,0 @@
-import type {Metadata} from "next";
-import {PageIntro} from "@/components/editorial";
-import {InfoLinks} from "@/components/info-links";
-export const metadata:Metadata={title:"Faisez gaffe à l’info",description:"Médias indépendants, critique des médias et ressources pour croiser les sources."};
-export default function Resources(){return <><PageIntro art="sardines" kicker="Faisez gaffe à l’info" title="CROISER" accent="LES SOURCES."><p>Le monde ne se résume pas à ce qu’on vous en raconte. Qui parle ? Qui choisit les sujets ? Qui possède les médias ?</p></PageIntro><section className="wrap section-space resources-page"><p className="lead">Lire, confronter les points de vue et se donner les moyens de comprendre.</p><InfoLinks/><p>Pour explorer les propriétaires des médias, consultez la carte et sa date de mise à jour. Les actionnaires évoluent : les ressources liées permettent de remonter aux informations documentées.</p><p className="small-note">Une première sélection à enrichir avec le collectif.</p></section></>;}

@@ -1,37 +1,46 @@
-# Paillettes & Pavés
+# Ça va déborder — Paillettes & Pavés
 
-Version graphique du cabaret de La Compagnie Monstre, saison 2026–2027 : illustrations pop, police Aileron, scène animée et galerie de personnages.
+Version 0.3. Jeu autonome pour GitHub Pages. Le jeu remplace le site précédent sur GitHub ; le dossier local historique du site est conservé. Cette version remplace les trois mécaniques du premier prototype et reprend la palette officielle : rose `#f62ca5`, jaune `#f4ff40`, noir `#161616`, papier `#fffefa`, avec Aileron et les véritables visuels de la compagnie.
 
-## Développement et publication
+## Trois gestes, trois jeux
 
-Node.js 24. Installer avec `npm ci`.
+- **Retour de bâton** : la marionnette fait raquette. Le pouce déplace horizontalement les ficelles et incline les bras verticalement. Renvoyer les bobards dans les porte-voix.
+- **Micro fronde** : maintenir pour mettre le micro en rotation, relâcher pour le lancer selon sa tangente. Le tracé en pointillés aide à viser. Une nouvelle bouche mise en voix enrichit l’accord musical. Viser la bouche rose rapporte davantage et passe la priorité à une autre voix.
+- **Pavé pendule** : le pouce incline le plateau sur deux axes ; un pavé roule et rebondit. Dévisser quatre attaches fait tomber le pupitre. Les trous renvoient le pavé au départ. Relâcher remet le plateau à niveau.
 
-- `npm run dev` : développement avec Vinext.
-- `npm run build:pages` : export HTML avec Next.js pour GitHub Pages, dans `out/`.
-- `npm run check` : vérification TypeScript.
+Une partie complète contient trois manches de 25 secondes. Les trois boutons permettent aussi de jouer un seul numéro. Les ratés interrompent les combos ; ils ne coupent pas la manche. Le meilleur score de cette version est distinct de celui du premier prototype.
 
-L’export Next.js est utilisé car l’export Vinext du socle présentait des erreurs de pré-rendu sur les routes du projet. Les composants React et les contenus sont communs.
+## Smartphone
 
-La publication GitHub Pages est automatique lors d’un push sur `main`. Le site utilise le sous-chemin `/paillettes-et-paves` configuré dans `next.config.ts` et `lib/site.ts`.
+L’application occupe la hauteur visible (`100dvh`) avec les marges de sécurité des téléphones. La zone sous le pouce ne recouvre pas la scène. Aucun gyroscope ni permission n’est demandé. Pointer Events, capture du pointeur et annulation de geste empêchent un lâcher interrompu de lancer le micro par erreur. La perte de focus ou le passage en arrière-plan met en pause. Un écran de règle précède chaque numéro.
 
-## Mettre à jour
+Sur ordinateur : flèches sur deux axes, espace maintenu puis relâché pour la fronde, P / Échap pour la pause. Le bouton son coupe musique et effets. Aucune requête vers un service tiers, aucun compte, aucune télémétrie. Record et préférence sonore sont stockés uniquement dans le navigateur, avec repli si ce stockage est indisponible.
 
-- Dates : `content/events.ts`. Dates ISO sans heure ; horaires seulement lorsqu’ils sont connus. Le classement à venir/passé se met à jour selon la date de Paris dans le navigateur.
-- Équipe et partenaires : `content/company.ts`.
-- Actualités : textes dans `content/articles/*.md`, métadonnées dans `content/articles.ts`. Le rendu Markdown couvre les paragraphes et titres de niveau 2 utilisés par ces articles.
-- Charte et animations : `app/globals.css`, `app/pop.css` et `app/motion-pop.css`.
-- Scène d’accueil et galerie : `components/pop-scene.tsx` et `components/cast-gallery.tsx`.
-- Réseau / commu / débats : `app/communaute/page.tsx`, explicitement en construction.
-- Visuels et polices : `public/images` et `public/fonts`.
+## Développer et vérifier
 
-Les visuels proviennent du dossier fourni pour ce projet. Les droits sur les photographies, logos et textes restent ceux de leurs titulaires ; ce dépôt ne leur accorde aucune licence de réutilisation. Les polices Anton et Source Sans 3 sont distribuées sous licence SIL Open Font License ; leurs licences sont conservées dans `public/fonts`.
+Node.js 24, sans paquet à installer :
 
-La version graphique utilise Aileron et conserve la licence CC0 fournie dans `public/fonts`. Les illustrations fournies en PNG ont été optimisées en WebP transparent dans `public/images/pop`. L’ancienne version est conservée en dehors du dépôt, dans l’archive locale `archives/site-v1-2026-09-24` du dossier de travail.
+```sh
+npm run check
+npm test
+npm run build
+npm start
+```
 
-## Périmètre éditorial
+Ouvrir http://127.0.0.1:4185/ pour les sources, ou http://127.0.0.1:4185/dist/ pour contrôler l’export sous un préfixe, comme sur GitHub Pages. Sur un téléphone du même Wi-Fi, remplacer `127.0.0.1` par l’IP locale du PC ; le serveur et le pare-feu doivent permettre la connexion. Arrêt du serveur : Ctrl+C.
 
-Les dates publiées proviennent de la page des Rancy : https://www.lesrancy.fr/evenements/paillettes-et-paves/
+Le moteur physique est dans `core.mjs`, indépendant de l’affichage. Les tests couvrent tangente et annulation de lancer, partage des voix, rebonds, stabilité à 60/120 Hz, trous, dévissage, enchaînement des manches et gestes aléatoires. Rendu Canvas 320 × 400, textures en mémoire à faible résolution, décor précalculé, sous-pas physiques à 120 Hz, particules plafonnées. La boucle graphique s’arrête hors partie. Le budget de l’export complet est plafonné à 750 000 octets par le script de construction.
 
-Les rôles de la distribution sont précisés sur la page du Guignol : https://www.theatreleguignoldelyon.fr/paillettesetpav%C3%A9s-th%C3%A9%C3%A2treleguignoldelyon
+## GitHub Pages
 
-La brochure complète et les tarifs de cession ne sont pas inclus dans le dépôt ni dans le site. Les nouveaux formats restent présentés comme en préparation. Aucun compte, commentaire, formulaire ou suivi statistique. La maquette porte une directive noindex ; celle-ci sera retirée lors du lancement officiel.
+Le jeu remplace le site dans le dépôt `ZhuGG/paillettes-et-paves`, à la demande du propriétaire. Le dossier local historique du site est conservé séparément. Tous les chemins publics sont relatifs : le même export fonctionne à la racine ou sous `/nom-du-depot/`.
+
+1. Placer le contenu de ce dossier, y compris `.github/`, dans le dépôt retenu, branche `main`.
+2. Dans **Settings → Pages**, choisir **GitHub Actions** comme source.
+3. Le workflow vérifie le JavaScript, exécute les tests et construit `dist/`, puis publie cet export. Il peut aussi être déclenché manuellement depuis Actions.
+
+La procédure suit la [documentation officielle GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages). URL prévue après publication et vérification : https://zhugg.github.io/paillettes-et-paves/. L’historique antérieur au remplacement reste accessible dans Git.
+
+## Visuels et droits
+
+Le logo officiel est conservé. Les huit sprites de Marcel et Zaza et le castelet ont été générés avec l’outil imagegen intégré à partir des références P&P, puis préparés à résolution de jeu en WebP sans perte. Quatre poses sont disponibles par personnage (repos, gauche, droite, joie). Le rendu utilise une grille fixe et un échantillonnage au plus proche voisin. Les originaux haute résolution et les consignes artistiques sont conservés localement dans `art-source/`, hors export public. Aileron et sa licence sont dans `assets/`. Les visuels de la compagnie ne sont pas placés sous licence libre par ce prototype. Les noms des jeux et leurs règles sont des propositions à éprouver avec la troupe.
