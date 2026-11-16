@@ -18,3 +18,5 @@
 .home-cast>span{max-height:290px}
 
 #scene3d{position:absolute;inset:0;z-index:0;pointer-events:none}#game{position:relative;z-index:1}#feedback{z-index:2}.panel{z-index:3}.skip-finale{z-index:3}
+
+.picks{grid-template-columns:repeat(2,1fr)}.picks button{font-size:11px;gap:12px}.panel{top:auto;bottom:0;max-height:72%;border-top:2px solid var(--ink);background:#fffefaf5;padding:12px 19px}.panel h2{font-size:27px}.panel #gesture{font-size:25px;margin:3px}.panel #detail{font-size:11px;margin-bottom:10px}.panel #explanation{font-size:14px}.stage{background:#24152b}.panel #eyebrow{margin-bottom:8px}.panel .text-button{min-height:34px}.panel .primary{min-height:44px;padding:10px}

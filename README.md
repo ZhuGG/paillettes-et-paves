@@ -1,14 +1,10 @@
 # Ça va déborder — Paillettes & Pavés
 
-Version 0.4. Jeu autonome pour GitHub Pages. Le jeu remplace le site précédent sur GitHub ; le dossier local historique du site est conservé. Cette version remplace les trois mécaniques du premier prototype et reprend la palette officielle : rose `#f62ca5`, jaune `#f4ff40`, noir `#161616`, papier `#fffefa`, avec Aileron et les véritables visuels de la compagnie.
+Version 0.5. Jeu autonome pour GitHub Pages. Le jeu remplace le site précédent sur GitHub ; le dossier local historique du site est conservé. Cette version remplace les trois mécaniques du premier prototype et reprend la palette officielle : rose `#f62ca5`, jaune `#f4ff40`, noir `#161616`, papier `#fffefa`, avec Aileron et les véritables visuels de la compagnie.
 
-## Trois gestes, trois jeux
+## Deux jeux, un geste
 
-- **Retour de bâton** : la marionnette fait raquette. Le pouce déplace horizontalement les ficelles et incline les bras verticalement. Renvoyer les bobards dans les porte-voix.
-- **Micro fronde** : maintenir pour mettre le micro en rotation, relâcher pour le lancer selon sa tangente. Le tracé en pointillés aide à viser. Une nouvelle bouche mise en voix enrichit l’accord musical. Viser la bouche rose rapporte davantage et passe la priorité à une autre voix.
-- **Pavé pendule** : le pouce incline le plateau sur deux axes ; un pavé roule et rebondit. Dévisser quatre attaches fait tomber le pupitre. Les trous renvoient le pavé au départ. Relâcher remet le plateau à niveau.
-
-Une partie complète contient trois manches de 25 secondes, suivies d’un rappel interactif. Le public en pixels progresse avec les réussites et reste acquis entre les manches ; il ne représente pas une fréquentation réelle. Les trois boutons permettent aussi de jouer un seul numéro. Les ratés interrompent les combos ; ils ne coupent pas la manche. Le meilleur score est enregistré localement. Les renvois peuvent déclencher une réaction en chaîne, chaque micro peut rebondir une fois, et les trois voix débloquent un chœur. Le pupitre bascule visuellement quand ses quatre attaches sont retirées.
+Vise avec le pouce puis relâche. Dans **Passe le micro**, le micro traverse la scène en arc pour rejoindre trois voix ; réunir les trois déclenche un chœur. Dans **Bas les pupitres**, une boule de mousse renverse les pupitres en cascade. Une partie complète comporte deux manches de 30 secondes. Les deux numéros sont aussi accessibles séparément.
 
 ## Smartphone
 
@@ -43,7 +39,7 @@ npm start
 
 Après construction, `npm start` sert `dist/` uniquement sur cet ordinateur : http://127.0.0.1:4185/. Pour un contrôle sous préfixe, servir la racine du projet et ouvrir `/dist/`. Le module 3D est également préparé dans `3d/` pour ce mode de travail. Sur téléphone, utiliser l’adresse publique GitHub Pages. Arrêt du serveur local : Ctrl+C.
 
-Le moteur physique est dans `core.mjs`, indépendant de l’affichage. Les tests couvrent tangente et annulation de lancer, partage des voix, rebonds, stabilité à 60/120 Hz, trous, dévissage, enchaînement des manches et gestes aléatoires. Des tests supplémentaires couvrent la propagation des répliques, le chœur, le ricochet, les brouillons et l’expiration des dates. Rendu Canvas 320 × 400, textures en mémoire à faible résolution, décor précalculé, sous-pas physiques à 120 Hz, particules plafonnées. La boucle graphique s’arrête hors partie. Le budget hors audio est plafonné à 750 000 octets par la construction ; la musique a son propre plafond de 3 500 000 octets et se charge après une action de jeu, avec `preload="none"`.
+Le moteur `core.mjs` teste les passes, le chœur, les annulations, les cascades, la stabilité à 60/120 Hz et l’enchaînement des deux manches. Les tests d’agenda et du repli sans WebGL sont conservés. Les tests visuels et UX/UI de cette version sont laissés à l’équipe.
 
 ## GitHub Pages
 
@@ -65,7 +61,7 @@ Le logo officiel est conservé. Les huit sprites de Marcel et Zaza et le castele
 
 ## Rendu Three.js
 
-`three-stage.mjs` construit un castelet en volume (cadre, étoiles, projecteurs) et le plateau du troisième numéro : sol, trous, rebonds, vis, pupitre et pavé sont des objets 3D. Tous les objets du plateau partagent sa transformation pour que l’inclinaison reste cohérente avec les positions de la physique. Le rendu 3D et les sprites 2D sont superposés sans lecture GPU vers le Canvas 2D.
+`three-stage.mjs` utilise une caméra en perspective sur une scène profonde : plancher, rideaux, gradins, personnages en pixel art, micro en vol et sept pupitres en volume. Le mouvement du micro et les pivots des pupitres suivent le moteur de jeu. Une trajectoire de visée apparaît pendant le geste. Le repli Canvas reste disponible sans WebGL2.
 
 Three.js 0.187.0 est préparé avec esbuild dans `dist/3d/theatre.js`, sans CDN. Le module est chargé à l’entrée dans un numéro et les matériaux sont compilés pendant l’écran de règle. Résolution GPU fixe de 320 × 400, ratio de pixels 1, aucun anticrénelage ni ombres calculées. Les animations décoratives suivent la préférence de mouvement réduit. Sans contexte WebGL2, le jeu conserve son rendu 2D ; une perte de contexte revient également au rendu 2D.
 

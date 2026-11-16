@@ -1,54 +1,45 @@
-import {
- WebGLRenderer,Scene,OrthographicCamera,Group,Mesh,BoxGeometry,CylinderGeometry,
- PlaneGeometry,CircleGeometry,RingGeometry,Shape,ExtrudeGeometry,InstancedMesh,Matrix4,
- MeshStandardMaterial,MeshBasicMaterial,AmbientLight,DirectionalLight,SpotLight,
- Texture,CanvasTexture,NearestFilter,SRGBColorSpace,NoToneMapping
-} from 'three';
-
+import {WebGLRenderer,Scene,PerspectiveCamera,Group,Mesh,BoxGeometry,SphereGeometry,CylinderGeometry,PlaneGeometry,RingGeometry,InstancedMesh,Matrix4,Color,Vector3,MeshStandardMaterial,MeshBasicMaterial,AmbientLight,DirectionalLight,PointLight,CanvasTexture,NearestFilter,SRGBColorSpace,NoToneMapping} from 'three';
+import {flightPoint,bowlingVelocity,ORIGIN} from './core.mjs';
 const P={pink:0xf62ca5,yellow:0xf4ff40,ink:0x161616,paper:0xfffefa};
-const coord=(x,y)=>[(x-160)/45,(200-y)/45];
-function pixelTexture(image){const t=new Texture(image);t.colorSpace=SRGBColorSpace;t.magFilter=NearestFilter;t.minFilter=NearestFilter;t.generateMipmaps=false;t.needsUpdate=true;return t;}
-function labelTexture(text){const c=document.createElement('canvas');c.width=64;c.height=24;const x=c.getContext('2d');x.fillStyle='#161616';x.fillRect(0,0,64,24);x.fillStyle='#f4ff40';x.font='bold 15px monospace';x.textAlign='center';x.fillText(text,32,18);const t=new CanvasTexture(c);t.magFilter=t.minFilter=NearestFilter;t.generateMipmaps=false;t.colorSpace=SRGBColorSpace;return t;}
-export async function createTheatre(canvas,{stageImage,onLost,reduced=false}={}){
+export async function createTheatre(canvas,{spriteImage,stageImage,onLost,reduced=false}={}){
  let gl;try{gl=canvas.getContext('webgl2',{alpha:false,antialias:false,powerPreference:'low-power'});}catch{return null;}if(!gl)return null;
- const renderer=new WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'low-power',precision:'mediump'});
- renderer.setPixelRatio(1);renderer.setSize(320,400,false);renderer.outputColorSpace=SRGBColorSpace;renderer.toneMapping=NoToneMapping;renderer.setClearColor(0xfff17b);renderer.shadowMap.enabled=false;
- const scene=new Scene(),camera=new OrthographicCamera(-160/45,160/45,200/45,-200/45,.1,40);camera.position.set(0,0,18);camera.lookAt(0,0,0);
- const matte=color=>new MeshStandardMaterial({color,roughness:.85,metalness:0});
- const ink=matte(P.ink),pink=matte(P.pink),yellow=matte(P.yellow),paper=matte(P.paper),wood=matte(0x842857);
- const simple=color=>new MeshBasicMaterial({color});
- function box(parent,w,h,d,material,x=0,y=0,z=0){const m=new Mesh(new BoxGeometry(w,h,d),material);m.position.set(x,y,z);parent.add(m);return m;}
- const backMap=pixelTexture(stageImage),back=new Mesh(new PlaneGeometry(320/45,400/45),new MeshBasicMaterial({map:backMap}));back.position.z=-1.2;scene.add(back);
- const frame=new Group();scene.add(frame);box(frame,6.85,.14,.6,ink,0,3.86,-.5);box(frame,.12,6.85,.5,pink,-3.4,.2,-.5);box(frame,.12,6.85,.5,pink,3.4,.2,-.5);box(frame,6.85,.18,.9,wood,0,-3.25,-.2);box(frame,6.7,.045,.95,yellow,0,-3.12,-.17);
- const stars=[];for(const [i,x,y] of [[0,-3.1,1.8],[1,3.1,1.5],[2,-2.85,-1.7],[3,2.95,-1.5]]){const shape=new Shape();for(let j=0;j<10;j++){const a=Math.PI/2+j*Math.PI/5,r=j%2?.19:.4;const px=Math.cos(a)*r,py=Math.sin(a)*r;if(j===0)shape.moveTo(px,py);else shape.lineTo(px,py);}shape.closePath();const star=new Mesh(new ExtrudeGeometry(shape,{depth:.1,bevelEnabled:false}),i%2?pink:yellow);star.position.set(x,y,-.3);frame.add(star);stars.push(star);}
- scene.add(new AmbientLight(P.paper,2));const key=new DirectionalLight(P.paper,2.5);key.position.set(-3,4,7);scene.add(key);
- const lights=[];for(let i=0;i<2;i++){const light=new SpotLight(i?P.pink:P.yellow,16,22,.58,.55,1);light.position.set(i?3:-3,4,5);scene.add(light,light.target);lights.push(light);box(frame,.36,.2,.35,ink,i?2.6:-2.6,3.55,0);box(frame,.24,.06,.28,yellow,i?2.6:-2.6,3.43,.14);}
- // The physics board is a single tilted group: floor, holes, bolts, podium, bumpers and puck share its transform.
- const board=new Group();scene.add(board);box(board,6.3,7.15,.18,ink,0,-.04,-.08);box(board,6.13,6.98,.1,paper,0,-.04,.04);
- const dots=new InstancedMesh(new BoxGeometry(.018,.018,.005),simple(P.pink),15*18);let dot=0;for(let y=63;y<352;y+=18)for(let x=30;x<294;x+=18){const [px,py]=coord(x,y);dots.setMatrixAt(dot++,new Matrix4().makeTranslation(px,py,.1));}dots.count=dot;board.add(dots);
- const bumpers=[];for(const [x,y,r] of [[160,187,33],[65,166,15],[255,166,15]]){const [px,py]=coord(x,y),g=new Group();g.position.set(px,py,.17);board.add(g);const base=new Mesh(new CylinderGeometry((r+2)/45,(r+3)/45,.16,16),ink);base.rotation.x=Math.PI/2;g.add(base);const cap=new Mesh(new CylinderGeometry(r/45,r/45,.18,16),yellow);cap.rotation.x=Math.PI/2;cap.position.z=.1;g.add(cap);const label=new Mesh(new PlaneGeometry(r>20?1.05:.48,r>20?.4:.18),new MeshBasicMaterial({map:labelTexture('BLA')}));label.position.z=.21;g.add(label);bumpers.push(g);}
- for(const [x,y] of [[92,245],[228,245]]){const [px,py]=coord(x,y);const rim=new Mesh(new RingGeometry(13/45,17/45,16),simple(P.pink));rim.position.set(px,py,.12);board.add(rim);const hole=new Mesh(new CircleGeometry(13/45,16),simple(P.ink));hole.position.set(px,py,.13);board.add(hole);}
- const bolts=[];for(const [x,y] of [[54,82],[266,82],[54,322],[266,322]]){const [px,py]=coord(x,y),g=new Group();g.position.set(px,py,.15);board.add(g);const cap=new Mesh(new CylinderGeometry(.25,.28,.2,8),pink);cap.rotation.x=Math.PI/2;g.add(cap);const slot=box(g,.065,.33,.035,paper,0,0,.13);slot.rotation.z=Math.PI/4;bolts.push(g);}
- const podium=new Group();podium.position.set(0,1.6,.22);board.add(podium);box(podium,1.62,.65,.48,wood);box(podium,1.86,.14,.62,pink,0,.36,.04);box(podium,.2,.65,.2,ink,-.55,-.5,0);box(podium,.2,.65,.2,ink,.55,-.5,0);
- const moi=labelTexture('MOI'),nous=labelTexture('NOUS'),podiumLabelMat=new MeshBasicMaterial({map:moi}),podiumLabel=new Mesh(new PlaneGeometry(1.32,.46),podiumLabelMat);podiumLabel.position.z=.25;podium.add(podiumLabel);
- const ball=new Group();board.add(ball);box(ball,.36,.36,.27,ink);box(ball,.29,.29,.04,pink,0,0,.16);box(ball,.19,.045,.02,paper,-.03,.08,.19);
- const trails=[];for(let i=0;i<4;i++){const trail=box(board,.13,.13,.04,new MeshBasicMaterial({color:P.pink,transparent:true,opacity:.4-i*.075,depthWrite:false}));trails.push(trail);}
- let lost=false,lastMetrics=-1,lastFreed=-1;canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;canvas.hidden=true;onLost?.();});
- // Compile once while the rules are displayed, rather than stopping the first playable frame.
- board.visible=true;await renderer.compileAsync(scene,camera);canvas.dataset.resolution='320x400';
- return {
-  render(model,{time=0,state='playing',ovation=0,topple=0}={}){
-   if(lost)return false;
-   board.visible=model.mode===2&&state!=='finale';frame.visible=true;
-   for(let i=0;i<stars.length;i++){stars[i].rotation.y=reduced?.2:Math.sin(time*1.2+i)*.45;stars[i].rotation.z=reduced?0:Math.sin(time+i)*.15;}
-   for(let i=0;i<lights.length;i++){lights[i].target.position.set(reduced?0:Math.sin(time*.8+i)*2,0,0);lights[i].intensity=state==='finale'?24:ovation>0?22:14;}
-   if(board.visible){board.rotation.x=model.tilt.y*.15;board.rotation.y=-model.tilt.x*.15;board.rotation.z=model.tilt.x*.035;for(let i=0;i<bolts.length;i++){bolts[i].visible=!model.bolts[i].dead;bolts[i].rotation.z=time*.5;}
-    const b=model.ball,[x,y]=coord(b.x,b.y);ball.position.set(x,y,.24);ball.rotation.z=-time*Math.hypot(b.vx,b.vy)*.012;for(let i=0;i<trails.length;i++){const [tx,ty]=coord(b.x-b.vx*.018*(i+1),b.y-b.vy*.018*(i+1));trails[i].position.set(tx,ty,.16);trails[i].visible=Math.hypot(b.vx,b.vy)>45;}
-    if(lastFreed!==model.falls){lastFreed=model.falls;podiumLabelMat.map=model.falls?nous:moi;podiumLabelMat.needsUpdate=true;}
-    const fall=topple>0?1-topple:0;podium.rotation.z=fall*1.8;podium.position.y=1.6-fall*2;podium.visible=fall<.8;
-   }
-   renderer.render(scene,camera);if(Math.floor(time)!==lastMetrics){lastMetrics=Math.floor(time);canvas.dataset.drawCalls=String(renderer.info.render.calls);canvas.dataset.triangles=String(renderer.info.render.triangles);}return true;
-  },
-  dispose(){scene.traverse(o=>{o.geometry?.dispose();if(o.material){for(const material of Array.isArray(o.material)?o.material:[o.material]){material.map?.dispose();material.dispose();}}});renderer.dispose();}
- };
+ const renderer=new WebGLRenderer({canvas,context:gl,antialias:false,powerPreference:'low-power',precision:'mediump'});renderer.setPixelRatio(1);renderer.setSize(320,400,false);renderer.outputColorSpace=SRGBColorSpace;renderer.toneMapping=NoToneMapping;renderer.setClearColor(0x24152b);
+ const scene=new Scene(),camera=new PerspectiveCamera(43,320/400,.1,70);camera.position.set(7.6,12.4,16.2);camera.lookAt(0,.2,-2.3);
+ const mat=color=>new MeshStandardMaterial({color,roughness:.85}),ink=mat(P.ink),pink=mat(P.pink),yellow=mat(P.yellow),paper=mat(P.paper),wood=mat(0xa43b78);
+ const cube=new BoxGeometry(1,1,1),sphere=new SphereGeometry(1,10,7),plane=new PlaneGeometry(1,1);
+ function box(parent,w,h,d,m,x=0,y=0,z=0){const b=new Mesh(cube,m);b.scale.set(w,h,d);b.position.set(x,y,z);parent.add(b);return b;}
+ function texture(image){const t=new CanvasTexture(image);t.magFilter=t.minFilter=NearestFilter;t.generateMipmaps=false;t.colorSpace=SRGBColorSpace;return t;}
+ function label(text,w=128,h=32){const a=document.createElement('canvas');a.width=w;a.height=h;const x=a.getContext('2d');x.fillStyle='#161616';x.fillRect(0,0,w,h);x.fillStyle='#f4ff40';x.font='bold 18px monospace';x.textAlign='center';x.fillText(text,w/2,h*.7);return new MeshBasicMaterial({map:texture(a)});}
+ const labels={moi:label('MOI'),nous:label('NOUS'),zaza:label('ZAZA'),invites:label('INVITE·ES'),public:label('LE PUBLIC')};
+ const stage=new Group();scene.add(stage);box(stage,9,.55,13,pink,0,-.35,-2);box(stage,9.12,.16,13.15,ink,0,-.12,-2);
+ for(let i=0;i<9;i++)box(stage,.97,.055,12.9,i%2?yellow:paper,-4+i,0,-2);
+ box(stage,9.3,.55,.2,ink,0,-.3,4.62);for(let i=0;i<12;i++)box(stage,.35,.18,.04,i%2?pink:yellow,-4.2+i*.76,-.3,4.74);
+ box(stage,.22,5,.4,ink,-4.5,2.4,-8.5);box(stage,.22,5,.4,ink,4.5,2.4,-8.5);box(stage,9.2,.25,.5,ink,0,4.8,-8.5);
+ for(let side of [-1,1])for(let i=0;i<4;i++)box(stage,.34,4.8,.4,i%2?wood:pink,side*(4.35-i*.3),2.35,-8.45+i%2*.23);
+ const backdrop=box(stage,6.1,4.7,.15,wood,0,2.3,-8.85);const sign=new Mesh(plane,label('PAILLETTES & PAVES',256,36));sign.scale.set(5.4,.75,1);sign.position.set(0,3.8,-8.72);stage.add(sign);
+ scene.add(new AmbientLight(P.paper,2.1));const key=new DirectionalLight(P.paper,2.4);key.position.set(-4,9,8);scene.add(key);const rim=new PointLight(P.pink,28,22,1);rim.position.set(4,4,-5);scene.add(rim);
+ const audienceHeads=new InstancedMesh(new BoxGeometry(.28,.3,.25),paper,32),audienceBodies=new InstancedMesh(new BoxGeometry(.32,.38,.22),pink,32);scene.add(audienceHeads,audienceBodies);const mx=new Matrix4();for(let i=0;i<32;i++){const side=i<16?-1:1,row=i%16,x=side*5.2,z=3.5-row*.72;audienceHeads.setMatrixAt(i,mx.makeTranslation(x,.6,z));audienceBodies.setMatrixAt(i,mx.makeTranslation(x,.25,z));audienceHeads.setColorAt(i,new Color(i%3?P.paper:P.yellow));}
+ const spriteMats=[];if(spriteImage)for(let row=0;row<2;row++)for(let col=0;col<4;col++){const a=document.createElement('canvas');a.width=a.height=128;a.getContext('2d').drawImage(spriteImage,col*128,row*128,128,128,0,0,128,128);spriteMats.push(new MeshBasicMaterial({map:texture(a),transparent:true,alphaTest:.3,side:2}));}
+ function actor(row,x,z,h=2.6){const g=new Group();g.position.set(x,.03,z);stage.add(g);const card=new Mesh(plane,spriteMats[row*4]||new MeshBasicMaterial({color:P.pink}));card.scale.set(h,h,1);card.position.y=h/2;g.add(card);const shadow=new Mesh(new RingGeometry(0,.48,12),new MeshBasicMaterial({color:P.ink,transparent:true,opacity:.18,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.035;g.add(shadow);return {g,card,row};}
+ const marcel=actor(0,-.9,3.5,2.7),zaza=actor(1,-2.45,-4.6,2.7);box(stage,1.6,.55,1.0,ink,-.9,.25,3.5);box(stage,1.7,.12,1.1,pink,-.9,.57,3.5);
+ const receiving=new Group();stage.add(receiving);const groups=[];for(let k=0;k<2;k++){const g=new Group();receiving.add(g);for(let j=0;j<3;j++){const x=(j-1)*.5;box(g,.35,.65,.28,j%2?pink:ink,x,.4,0);const head=new Mesh(sphere,paper);head.scale.set(.23,.26,.23);head.position.set(x,.98,0);g.add(head);for(let e of [-1,1])box(g,.045,.055,.025,ink,x+e*.075,1.01,.23);}groups.push(g);}
+ const targetRings=[],nameCards=[];for(let i=0;i<3;i++){const ring=new Mesh(new RingGeometry(.56,.72,20),new MeshBasicMaterial({color:P.pink,side:2}));ring.rotation.x=-Math.PI/2;ring.position.y=.045;receiving.add(ring);targetRings.push(ring);const card=new Mesh(plane,[labels.zaza,labels.invites,labels.public][i]);card.scale.set(1.75,.43,1);receiving.add(card);nameCards.push(card);}
+ const micro=new Group();scene.add(micro);box(micro,.11,.55,.11,ink);const grille=new Mesh(new SphereGeometry(.21,8,6),paper);grille.position.y=.34;micro.add(grille);for(let y of [.25,.35,.45])box(micro,.32,.035,.31,ink,0,y,0);box(micro,.115,.23,.12,pink,0,-.08,0);
+ const foam=new Mesh(new SphereGeometry(.37,12,8),pink);scene.add(foam);const foamShadow=new Mesh(new RingGeometry(0,.38,16),new MeshBasicMaterial({color:P.ink,transparent:true,opacity:.2,depthWrite:false}));foamShadow.rotation.x=-Math.PI/2;scene.add(foamShadow);
+ const props=new Group();scene.add(props);const podiums=[];for(let i=0;i<7;i++){const root=new Group();props.add(root);box(root,.8,1.25,.38,wood,0,.75,0);box(root,1.07,.17,.62,pink,0,1.45,0);box(root,.17,.2,.6,ink,-.27,.1,0);box(root,.17,.2,.6,ink,.27,.1,0);const name=new Mesh(plane,labels.moi);name.scale.set(.7,.34,1);name.position.set(0,.95,.205);root.add(name);podiums.push({root,name});}
+ const dots=new InstancedMesh(new SphereGeometry(.055,6,4),new MeshBasicMaterial({color:P.ink}),16);scene.add(dots);const aimRing=new Mesh(new RingGeometry(.3,.38,20),new MeshBasicMaterial({color:P.pink,side:2}));aimRing.rotation.x=-Math.PI/2;scene.add(aimRing);
+ const axis=new Vector3(),look=new Vector3(),projector=new Vector3();let lost=false,metrics=-1;canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;canvas.hidden=true;onLost?.();});
+ props.visible=receiving.visible=true;await renderer.compileAsync(scene,camera);canvas.dataset.resolution='320x400';canvas.dataset.projection='perspective';
+ return {render(model,{time=0,state='playing',ovation=0}={}){if(lost)return false;const finale=state==='finale';const sway=reduced?0:Math.sin(time*.23)*.75;camera.position.set(7.6+sway,12.4,16.2);look.set(0,.25,-2.3);if(!reduced&&model.shot){look.x=model.shot.x*.08;look.y+=model.shot.y*.06;}camera.lookAt(look);
+  props.visible=model.mode===1&&!finale;receiving.visible=model.mode===0&&!finale;zaza.g.visible=model.mode===0||finale;
+  zaza.g.position.set(finale?1.5:model.targets[0]?.x||-2.45,.03,finale?0:model.targets[0]?.z||-4.6);marcel.g.position.set(finale?-1.5:-.9,.03,finale?0:3.5);
+  for(const a of [marcel,zaza]){const pose=finale||ovation>0?3:model.input.held?1:0;if(spriteMats.length)a.card.material=spriteMats[a.row*4+pose];a.card.rotation.y=Math.atan2(camera.position.x-a.g.position.x,camera.position.z-a.g.position.z);a.card.position.y=1.35+(reduced?0:Math.sin(time*3+a.row)*.035);}
+  if(receiving.visible)for(let i=0;i<3;i++){const t=model.targets[i];targetRings[i].position.set(t.x,.05,t.z);targetRings[i].material.color.setHex(i===model.wanted?P.pink:P.ink);targetRings[i].scale.setScalar(t.lit>0?1.2:1);nameCards[i].position.set(t.x,2.55,t.z);nameCards[i].quaternion.copy(camera.quaternion);if(i>0){groups[i-1].position.set(t.x,t.lit*.2,t.z);groups[i-1].rotation.y=.35;}}
+  if(props.visible)for(let i=0;i<podiums.length;i++){const p=model.posts[i],o=podiums[i];o.root.position.set(p.x,0,p.z);o.root.quaternion.setFromAxisAngle(axis.set(p.dz,0,-p.dx),p.angle);o.name.material=p.scored?labels.nous:labels.moi;}
+  micro.visible=model.mode===0&&!finale;foam.visible=foamShadow.visible=model.mode===1&&!finale;const shot=model.shot;
+  if(micro.visible){const p=shot||ORIGIN;micro.position.set(p.x,p.y,p.z);micro.rotation.set(0,time*2,shot?Math.sin(time*9)*.6:-.25);}
+  if(foam.visible){const p=shot||{x:0,y:.37,z:ORIGIN.z};foam.position.set(p.x,p.y,p.z);foam.rotation.set(time*2,0,time);foamShadow.position.set(p.x,.035,p.z);}
+  dots.visible=aimRing.visible=model.input.held&&!shot&&!finale&&model.cooldown<=0&&model.waveWait<=0;
+  if(dots.visible){aimRing.position.set(model.aim.x,.06,model.aim.z);for(let i=0;i<16;i++){let p;if(model.mode===0)p=flightPoint({target:model.aim},i/15);else{const v=bowlingVelocity(model.aim),t=i/15*.58;p={x:v.vx*t,y:.1,z:ORIGIN.z+v.vz*t};}dots.setMatrixAt(i,mx.makeTranslation(p.x,p.y,p.z));}dots.instanceMatrix.needsUpdate=true;dots.frustumCulled=false;}
+  rim.intensity=finale||ovation>0?45:28;renderer.render(scene,camera);if(Math.floor(time)!==metrics){metrics=Math.floor(time);canvas.dataset.drawCalls=String(renderer.info.render.calls);canvas.dataset.triangles=String(renderer.info.render.triangles);}return true;},project(x,y,z){projector.set(x,y,z).project(camera);return {x:(projector.x*.5+.5)*320,y:(-.5*projector.y+.5)*400};},dispose(){scene.traverse(o=>{o.geometry?.dispose();if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material]){m.map?.dispose();m.dispose();}});renderer.dispose();}};
 }
