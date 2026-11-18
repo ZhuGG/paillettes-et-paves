@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 const root=fileURLToPath(new URL('.',import.meta.url)),out=path.join(root,'dist');
 const html=await readFile(path.join(root,'index.html'),'utf8'),css=await readFile(path.join(root,'kart.css'),'utf8');
-for(const [,asset] of [...html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g),...css.matchAll(/url\('([^']+)'\)/g)])await stat(path.join(root,asset));
+for(const [,asset] of [...html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g),...css.matchAll(/url\('([^']+)'\)/g)])await stat(path.join(root,asset.split(/[?#]/)[0]));
 await rm(out,{recursive:true,force:true});await mkdir(out);
 for(const file of ['index.html','kart.css','kart-ui.js','kart-core.mjs','agenda.mjs','agenda.json','icon.svg','assets','audio'])await cp(path.join(root,file),path.join(out,file),{recursive:true});
 await mkdir(path.join(out,'3d'));

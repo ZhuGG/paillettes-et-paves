@@ -24,8 +24,8 @@ export class KartRace {
   if(drifting){this.charge=Math.min(1.6,this.charge+dt*(.45+Math.abs(bend)*28));}else if(this.drifting){if(this.charge>.4){this.boost=Math.max(this.boost,.65+this.charge*.8);this.emit('boost',{label:this.charge>1.1?'DÉRAPAGE PARFAIT !':'RELANCE !'});}this.charge=0;}
   this.drifting=drifting;const target=offroad?16:this.slow>0?22:this.boost>0?48:drifting?32:35;
   this.speed+=(target-this.speed)*(1-Math.exp(-(target<this.speed?4:1.6)*dt));
-  // Road-relative steering: the camera follows the course; steer controls the racing line.
-  this.lane+=this.steer*(drifting?10:8.4)*dt+bend*this.speed*this.speed*(drifting?.044:.028)*dt;this.lane=clamp(this.lane,-10,10);
+  // Track lane + points left; positive input means screen-right, hence the minus sign.
+  this.lane+=-this.steer*(drifting?10:8.4)*dt+bend*this.speed*this.speed*(drifting?.044:.028)*dt;this.lane=clamp(this.lane,-10,10);
   const old=this.progress;this.progress+=this.speed*dt/(clamp(1-bend*this.lane,.7,1.3));const crossed=Math.floor(this.progress/this.track.length)>Math.floor(old/this.track.length);
   if(crossed){this.lapTimes.push(this.elapsed-this.lastLap);this.lastLap=this.elapsed;this.lap=Math.min(this.laps,Math.floor(this.progress/this.track.length)+1);this.emit('lap',{lap:this.lap});}
   for(const b of this.boxes){b.timer=Math.max(0,b.timer-dt);if(!b.timer&&this.near(b.s,2.2)&&Math.abs(this.lane-b.lane)<1.7){b.timer=5;this.pickups++;if(!this.item){this.item=this.rank()>2&&this.rng()<.65?'boost':this.rng()<.5?'boost':'confetti';this.emit('pickup',{item:this.item});}}}
