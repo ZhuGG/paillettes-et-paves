@@ -1,0 +1,9 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {Track,KartRace} from './kart-core.mjs';
+const advance=(g,n,dt=1/120)=>{for(let i=0;i<Math.ceil(n/dt);i++)g.step(dt);};
+test('closed track has continuous position and sane width',()=>{const t=new Track();assert.ok(t.length>600);const a=t.at(0),b=t.at(t.length-.001);assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<.01);assert.ok(Math.abs(Math.hypot(a.tx,a.tz)-1)<1e-8);});
+test('countdown prevents early acceleration',()=>{const g=new KartRace();g.start();advance(g,2);assert.equal(g.progress,0);advance(g,2);assert.equal(g.phase,'racing');assert.ok(g.progress>0);});
+test('steering, drift release and limits remain physical',()=>{const g=new KartRace();g.start();advance(g,6);g.setInput(.25,true);advance(g,1);assert.ok(g.charge>.4);g.setInput(0,false);g.step(.01);assert.ok(g.boost>0);g.setInput(1,true);advance(g,10);assert.ok(Math.abs(g.lane)<=10);assert.ok(Number.isFinite(g.speed));});
+test('bonus use consumes its inventory slot exactly once',()=>{const g=new KartRace();g.start();advance(g,4);g.item='boost';assert.ok(g.useItem());assert.equal(g.item,null);assert.equal(g.useItem(),false);assert.ok(g.boost>0);});
+test('a complete race records three laps and stops simulation',()=>{const g=new KartRace();g.start();for(let i=0;i<20000&&g.phase!=='finished';i++){g.setInput(-g.lane*.3,false);g.step(1/120);}assert.equal(g.phase,'finished');assert.equal(g.lapTimes.length,3);const time=g.elapsed;g.step(.1);assert.equal(g.elapsed,time);assert.ok(g.rank()>=1&&g.rank()<=6);});
+test('frame rates produce similar progress',()=>{const run=dt=>{const g=new KartRace();g.start();advance(g,12,dt);return g.progress;};assert.ok(Math.abs(run(1/60)-run(1/120))<1);});
+test('reset clears all racing state',()=>{const g=new KartRace();g.start();advance(g,10);g.item='confetti';g.reset(1);assert.equal(g.phase,'ready');assert.equal(g.elapsed,0);assert.equal(g.item,null);assert.equal(g.pilot,1);});
