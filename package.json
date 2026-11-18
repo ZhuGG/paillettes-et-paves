@@ -1,6 +1,6 @@
 {
   "name": "pp-ca-va-deborder",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Course de karts promotionnelle Paillettes & Pavés",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "node kart.test.mjs && node agenda.test.mjs",
-    "check": "node --check kart-core.mjs && node --check kart-scene.mjs && node --check kart-ui.js && node --check agenda.mjs && node --check build.mjs && node --check kart-driver.mjs",
+    "check": "node --check kart-core.mjs && node --check kart-scene.mjs && node --check kart-ui.js && node --check agenda.mjs && node --check build.mjs && node --check kart-driver.mjs && node --check kart-input.mjs",
     "build": "node build.mjs",
     "start": "python3 -m http.server 4185 --bind 127.0.0.1 --directory dist"
   },

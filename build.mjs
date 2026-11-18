@@ -6,7 +6,9 @@ const root=fileURLToPath(new URL('.',import.meta.url)),out=path.join(root,'dist'
 const html=await readFile(path.join(root,'index.html'),'utf8'),css=await readFile(path.join(root,'kart.css'),'utf8');
 for(const [,asset] of [...html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g),...css.matchAll(/url\('([^']+)'\)/g)])await stat(path.join(root,asset.split(/[?#]/)[0]));
 await rm(out,{recursive:true,force:true});await mkdir(out);
-for(const file of ['index.html','kart.css','kart-ui.js','kart-core.mjs','agenda.mjs','agenda.json','icon.svg','assets','audio'])await cp(path.join(root,file),path.join(out,file),{recursive:true});
+for(const file of ['index.html','kart.css','kart-ui.js','kart-core.mjs','kart-input.mjs','agenda.mjs','agenda.json','icon.svg','assets','audio'])await cp(path.join(root,file),path.join(out,file),{recursive:true});
+// The kart app no longer ships the unused castelet and old front-facing atlas.
+for(const old of ['castelet-v3.webp','sprites-v3.webp'])await rm(path.join(out,'assets',old),{force:true});
 await mkdir(path.join(out,'3d'));
 await build({entryPoints:[path.join(root,'kart-scene.mjs')],outfile:path.join(out,'3d/kart.js'),bundle:true,format:'esm',platform:'browser',target:['es2022'],minify:true,legalComments:'eof'});
 await cp(path.join(out,'3d'),path.join(root,'3d'),{recursive:true});

@@ -4,7 +4,7 @@ Première version jouable de la refonte kart, 18 novembre 2026. Une seule course
 
 ## Jouer
 
-L’accélération est automatique. Glisser horizontalement dans la zone gauche en bas de l’écran pour choisir sa trajectoire. Maintenir le bouton DÉRAPAGE en tournant, puis le relâcher pour obtenir une relance. Les boîtes jaunes donnent une poussée ou des paillettes qui ralentissent les concurrents proches devant soi. Toucher le bouton bonus pour l’utiliser. Sortir sur les bas-côtés ralentit le kart.
+L’accélération est automatique. Dans la zone de direction en bas à gauche : toucher sa moitié gauche pour aller à gauche, sa moitié droite pour aller à droite. Le centre est neutre, relâcher recentre la commande. Maintenir le bouton DÉRAPAGE en tournant, puis le relâcher pour obtenir une relance. Les boîtes jaunes donnent une poussée ou des paillettes qui ralentissent les concurrents proches devant soi. Toucher le bouton bonus pour l’utiliser. Sortir sur les bas-côtés ralentit le kart.
 
 Clavier : flèches gauche/droite ou Q/D (A/D également), Espace pour déraper, Entrée/B pour le bonus, P/Échap pour la pause. Le changement d’onglet met la course en pause. Reprendre demande une action explicite. Son désactivé au premier lancement ; la préférence et le meilleur temps sont conservés localement.
 
@@ -30,3 +30,7 @@ Palette officielle : rose `#f62ca5`, jaune `#f4ff40`, noir `#161616`, papier `#f
 La musique provient de `ZhuGG/ClumsyPP`, à la demande du propriétaire ; sa provenance est conservée dans `audio/README.md`. Aileron et Three.js gardent leurs licences propres.
 
 Les anciens jeux restent dans l’historique Git ; leurs sources historiques ne font pas partie de l’export. Le brouillon non publié « Service minimum » a été sauvegardé à côté du dépôt dans `../archives-prototypes/avant-kart-2026-11-18/`. Le dossier local de l’ancien site reste conservé séparément dans `../../site/`.
+
+### Mise à jour 1.1.0
+
+Commande tactile absolue, indépendante du point de contact initial, avec la même convention gauche/droite que le clavier. Atlas pixel art spécifique à la course : dos, trois quarts arrière gauche/droite et face ; la vue est choisie selon la position de la caméra par rapport au kart. Les panneaux du circuit affichent jusqu’à six dates à venir, lieu et ville, issus de l’agenda filtré. Les anciens sprites et le castelet ne sont plus expédiés dans l’export. Source et prompt de génération : `docs/art/DRIVERS-KART-V2.md`. Les tests sur téléphone restent à effectuer par le propriétaire.
